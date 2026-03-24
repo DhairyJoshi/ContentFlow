@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPosts, getPostBySlug } from "@/lib/contentful";
 import { formatDate } from "@/lib/utils";
 import { richTextToHtml } from "@/lib/richtext";
+import PreviewBanner from "@/components/preview-banner";
 
 export async function generateStaticParams() {
   const posts = await getPosts();
@@ -125,8 +126,13 @@ export default async function BlogDetailPage({
 }) {
   const { slug } = await params;
   return (
-    <Suspense fallback={<BlogDetailLoading />}>
-      <BlogDetailContent slug={slug} />
-    </Suspense>
+    <>
+      <Suspense fallback={null}>
+        <PreviewBanner />
+      </Suspense>
+      <Suspense fallback={<BlogDetailLoading />}>
+        <BlogDetailContent slug={slug} />
+      </Suspense>
+    </>
   );
 }

@@ -1,7 +1,9 @@
 import { BlogPost, ContentfulBlogResponseItem, ContentfulResponse } from "./types";
+import { draftMode } from "next/headers";
 
 const CONTENTFUL_SPACE_ID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
 const CONTENTFUL_ACCESS_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN;
+const CONTENTFUL_PREVIEW_ACCESS_TOKEN = process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
 
 if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_ACCESS_TOKEN) {
   throw new Error(
@@ -10,13 +12,34 @@ if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_ACCESS_TOKEN) {
 }
 
 const CONTENTFUL_API_URL = `https://cdn.contentful.com/spaces/${CONTENTFUL_SPACE_ID}`;
+const CONTENTFUL_PREVIEW_API_URL = `https://preview.contentful.com/spaces/${CONTENTFUL_SPACE_ID}`;
 
-async function fetchContentful<T>(query: string): Promise<T> {
-  const url = `${CONTENTFUL_API_URL}/entries?${query}&access_token=${CONTENTFUL_ACCESS_TOKEN}`;
+async function fetchContentful<T>(query: string, preview: boolean = false): Promise<T> {
+  let isDraftMode = preview;
+  
+  if (!preview) {
+    try {
+      const { isEnabled } = await draftMode();
+      isDraftMode = isEnabled;
+    } catch (error) {
+    }
+  }
+
+  const accessToken = isDraftMode ? CONTENTFUL_PREVIEW_ACCESS_TOKEN : CONTENTFUL_ACCESS_TOKEN;
+  const urlBase = isDraftMode ? CONTENTFUL_PREVIEW_API_URL : CONTENTFUL_API_URL;
+  
+  if (isDraftMode && !accessToken) {
+    throw new Error("Missing CONTENTFUL_PREVIEW_ACCESS_TOKEN env variable");
+  }
+
+  const url = `${urlBase}/entries?${query}&access_token=${accessToken}`;
+  console.log(`Fetching from Contentful (${isDraftMode ? 'Preview' : 'Delivery'} API):`, url);
 
   const response = await fetch(url, {
+    cache: isDraftMode ? 'no-store' : 'force-cache',
     next: {
-      revalidate: 3600,
+      tags: ['contentful'],
+      revalidate: isDraftMode ? 0 : 3600,
     },
   });
 
