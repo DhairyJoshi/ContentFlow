@@ -21,6 +21,9 @@ export interface ContentfulBlogResponseItem {
     excerpt?: string;
     content?: string;
     coverImage?: {
+      sys: {
+        id: string;
+      };
       fields?: {
         file?: {
           url: string;
@@ -37,4 +40,13 @@ export interface ContentfulResponse<T> {
   total: number;
   skip: number;
   limit: number;
+  includes?: {
+    Asset?: Array<{
+      sys: { id: string };
+      fields: {
+        file: { url: string };
+        title?: string;
+      };
+    }>;
+  };
 }

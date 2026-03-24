@@ -30,21 +30,37 @@ async function fetchContentful<T>(query: string): Promise<T> {
 }
 
 function mapContentfulToBlogPost(
-  item: ContentfulBlogResponseItem
+  item: ContentfulBlogResponseItem,
+  includes?: any
 ): BlogPost {
   const { fields } = item;
+
+  let coverImage = null;
+  if (fields.coverImage) {
+    if (fields.coverImage.fields?.file) {
+      coverImage = {
+        url: `https:${fields.coverImage.fields.file.url}`,
+        title: fields.coverImage.fields.title,
+      };
+    } else if (includes?.Asset && fields.coverImage.sys?.id) {
+      const assetId = fields.coverImage.sys.id;
+      const asset = includes.Asset.find((a: any) => a.sys.id === assetId);
+      if (asset?.fields?.file) {
+        coverImage = {
+          url: `https:${asset.fields.file.url}`,
+          title: asset.fields.title,
+        };
+      }
+    }
+  }
+
   return {
     id: item.sys.id,
     title: fields.title || "",
     slug: fields.slug || "",
     excerpt: fields.excerpt || "",
     content: fields.content || "",
-    coverImage: fields.coverImage?.fields?.file
-      ? {
-          url: `https:${fields.coverImage.fields.file.url}`,
-          title: fields.coverImage.fields.title,
-        }
-      : null,
+    coverImage,
     publishedDate: fields.publishedDate || new Date().toISOString(),
   };
 }
@@ -64,12 +80,14 @@ export async function getPosts(limit: number = 100): Promise<BlogPost[]> {
     ContentfulResponse<ContentfulBlogResponseItem>
   >(query);
 
-  return data.items.map(mapContentfulToBlogPost).sort((a, b) => {
-    return (
-      new Date(b.publishedDate).getTime() -
-      new Date(a.publishedDate).getTime()
-    );
-  });
+  return data.items
+    .map((item) => mapContentfulToBlogPost(item, data.includes))
+    .sort((a, b) => {
+      return (
+        new Date(b.publishedDate).getTime() -
+        new Date(a.publishedDate).getTime()
+      );
+    });
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -86,7 +104,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     return null;
   }
 
-  return mapContentfulToBlogPost(data.items[0]);
+  return mapContentfulToBlogPost(data.items[0], data.includes);
 }
 
 export async function getLatestPosts(count: number = 3): Promise<BlogPost[]> {
