@@ -16,7 +16,7 @@ async function fetchContentful<T>(query: string): Promise<T> {
 
   const response = await fetch(url, {
     next: {
-      revalidate: 3600, // ISR: revalidate every hour
+      revalidate: 3600,
     },
   });
 

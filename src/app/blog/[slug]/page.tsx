@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,7 +42,6 @@ export async function generateMetadata({
 }
 
 function RichTextRenderer({ content }: { content: string }) {
-  // Simple HTML rendering - in production, use a library like react-markdown or @contentful/rich-text-react-renderer
   return (
     <div
       className="prose dark:prose-invert prose-sm sm:prose-base max-w-none"
@@ -68,12 +68,11 @@ function BlogDetailLoading() {
   );
 }
 
-export default async function BlogDetailPage({
-  params,
+async function BlogDetailContent({
+  slug,
 }: {
-  params: Promise<{ slug: string }>;
+  slug: string;
 }) {
-  const { slug } = await params;
   const post = await getPostBySlug(slug);
 
   if (!post) {
@@ -137,5 +136,19 @@ export default async function BlogDetailPage({
         </Link>
       </div>
     </article>
+  );
+}
+
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  return (
+    <Suspense fallback={<BlogDetailLoading />}>
+      <BlogDetailContent slug={slug} />
+    </Suspense>
   );
 }

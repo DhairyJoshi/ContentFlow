@@ -1,4 +1,3 @@
-// Domain types - clean, framework-agnostic
 export interface BlogPost {
   id: string;
   title: string;

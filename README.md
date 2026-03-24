@@ -30,7 +30,7 @@ A modern, production-ready blog application built with **Next.js (App Router)**,
 
 ```bash
 git clone <repository-url>
-cd eshkon-project
+cd content-flow
 ```
 
 ### 2. Install Dependencies

@@ -1,10 +1,3 @@
-#!/usr/bin/env node
-
-/**
- * Contentful Content Model Setup
- * This provides the exact schema needed for the BlogPost content type
- */
-
 const CONTENT_MODEL = {
   name: "BlogPost",
   description: "Blog post with rich text content",
