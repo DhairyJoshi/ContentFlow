@@ -26,7 +26,7 @@ function getOptions() {
     },
     renderNode: {
       [BLOCKS.PARAGRAPH]: (node: any, children: React.ReactNode) => (
-        <p className="leading-7 [&:not(:first-child)]:mt-6 text-foreground/90">{children}</p>
+        <p className="leading-7 not-first:mt-6 text-foreground/90">{children}</p>
       ),
       [BLOCKS.HEADING_1]: (node: any, children: React.ReactNode) => (
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mt-12 mb-6 text-foreground">
