@@ -7,20 +7,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPosts } from "@/lib/contentful";
 import { formatDate } from "@/lib/utils";
 import { Suspense } from "react";
+import { BlogFilter } from "@/components/blog-filter";
 
 export const metadata: Metadata = {
   title: "Content Flow | All Articles",
   description: "Browse all articles and stories",
 };
 
-async function BlogPostsList() {
+async function BlogPostsList({ query }: { query?: string }) {
   try {
-    const posts = await getPosts();
+    const posts = await getPosts({ query });
 
     if (posts.length === 0) {
       return (
         <div className="text-center py-16">
-          <p className="text-muted-foreground text-lg">No blog posts yet.</p>
+          <p className="text-muted-foreground text-lg">No blog posts found.</p>
         </div>
       );
     }
@@ -37,6 +38,7 @@ async function BlogPostsList() {
                       src={post.coverImage.url}
                       alt={post.coverImage.title || post.title}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 200px, 200px"
                       className="object-cover transition-transform group-hover:scale-105"
                     />
                   </div>
@@ -97,20 +99,31 @@ function BlogPostsLoading() {
   );
 }
 
-export default function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ query?: string }>;
+}) {
+  const { query } = await searchParams;
+
   return (
     <div className="space-y-8 py-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight lg:text-4xl text-foreground">
-          All Articles
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Browse our latest thoughts, ideas, and tutorials.
-        </p>
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight lg:text-4xl text-foreground">
+            All Articles
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Browse our latest thoughts, ideas, and tutorials.
+          </p>
+        </div>
+        <div className="pt-2">
+          <BlogFilter />
+        </div>
       </div>
 
-      <Suspense fallback={<BlogPostsLoading />}>
-        <BlogPostsList />
+      <Suspense fallback={<BlogPostsLoading />} key={query}>
+        <BlogPostsList query={query} />
       </Suspense>
     </div>
   );

@@ -35,6 +35,7 @@ async function LatestPostsList() {
                   src={post.coverImage.url}
                   alt={post.coverImage.title || post.title}
                   fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform hover:scale-105"
                 />
               </div>
