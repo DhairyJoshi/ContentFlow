@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blog | Next.js + Contentful",
-  description: "A modern blog built with Next.js and Contentful",
+  title: "Content Flow | Next.js + Contentful",
+  description: "A modern content platform built with Next.js and Contentful",
 };
 
 export default function RootLayout({
@@ -35,7 +35,7 @@ export default function RootLayout({
         </main>
         <footer className="border-t bg-muted/50 mt-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-sm text-muted-foreground">
-            <p>© 2026 Blog. Built with Next.js and Contentful.</p>
+            <p>© 2026 Content Flow. Built with Next.js and Contentful.</p>
           </div>
         </footer>
       </body>

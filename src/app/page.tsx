@@ -9,8 +9,8 @@ import { formatDate } from "@/lib/utils";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Home | Blog",
-  description: "Welcome to our blog. Discover the latest articles.",
+  title: "Home | Content Flow",
+  description: "Welcome to Content Flow. Discover the latest articles.",
 };
 
 async function LatestPostsList() {
@@ -49,7 +49,7 @@ async function LatestPostsList() {
               </p>
             </CardContent>
             <div className="p-4 pt-0">
-              <Link href={`/blog/${post.slug}`} className="w-full">
+              <Link href={`/blogs/${post.slug}`} className="w-full">
                 <Button className="w-full" variant="secondary" size="sm">
                   Read More
                 </Button>
@@ -98,14 +98,14 @@ export default function Home() {
       <section className="text-center space-y-6 py-12 md:py-24">
         <div className="space-y-2">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter">
-            Welcome to Our Blog
+            Welcome to Content Flow
           </h1>
-          <p className="text-xl text-muted-foreground max-w-[600px] mx-auto">
-            Discover insightful articles about web development, technology, and modern software practices.
+          <p className="text-xl text-muted-foreground max-w-150 mx-auto">
+            Discover insightful content about web development, technology, and modern software practices.
           </p>
         </div>
         <div className="flex justify-center gap-4">
-          <Link href="/blog">
+          <Link href="/blogs">
             <Button size="lg">Browse Articles</Button>
           </Link>
           <Link href="https://github.com" target="_blank">

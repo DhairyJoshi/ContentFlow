@@ -13,7 +13,7 @@ export default function NotFound() {
         Blog post not found
       </p>
       <a
-        href="/blog"
+        href="/blogs"
         className="inline-block mt-6 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         Back to Blog

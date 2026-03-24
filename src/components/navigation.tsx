@@ -6,14 +6,14 @@ export function Navigation() {
     <nav className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold tracking-tight">
-          Blog
+          Content Flow
         </Link>
         <div className="flex gap-4">
           <Link href="/">
             <Button variant="ghost">Home</Button>
           </Link>
-          <Link href="/blog">
-            <Button variant="ghost">Blog</Button>
+          <Link href="/blogs">
+            <Button variant="ghost">Articles</Button>
           </Link>
         </div>
       </div>

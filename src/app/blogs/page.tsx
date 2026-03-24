@@ -9,8 +9,8 @@ import { formatDate } from "@/lib/utils";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Blog | All Articles",
-  description: "Browse all blog articles and stories",
+  title: "Content Flow | All Articles",
+  description: "Browse all articles and stories",
 };
 
 async function BlogPostsList() {
@@ -26,10 +26,10 @@ async function BlogPostsList() {
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-10">
         {posts.map((post) => (
-          <Link key={post.id} href={`/blog/${post.slug}`}>
-            <Card className="hover:bg-muted/50 transition-colors cursor-pointer group">
+          <Link key={post.id} href={`/blogs/${post.slug}`}>
+            <Card className="hover:bg-muted/50 transition-colors cursor-pointer group border-transparent hover:border-border shadow-none hover:shadow-sm">
               <div className="flex flex-col sm:flex-row gap-6 p-6">
                 {post.coverImage && (
                   <div className="relative w-full sm:w-48 aspect-video sm:aspect-square shrink-0 rounded-md overflow-hidden bg-muted">

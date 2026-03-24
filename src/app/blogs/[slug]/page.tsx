@@ -32,7 +32,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${post.title} | Blog`,
+    title: `${post.title} | Content Flow`,
     description: post.excerpt,
     openGraph: {
       title: post.title,
@@ -86,7 +86,7 @@ async function BlogDetailContent({
     <article className="container max-w-3xl mx-auto py-6 lg:py-10">
       {/* Header */}
       <div className="flex flex-col items-start gap-4 border-b pb-8 mb-8">
-        <Link href="/blog" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-2">
+        <Link href="/blogs" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-2">
           ← Back to Blog
         </Link>
         <div className="space-y-4">
