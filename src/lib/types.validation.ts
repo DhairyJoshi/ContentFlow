@@ -1,9 +1,6 @@
-"use client";
-
+import React from "react";
 import { BlogPost, ContentfulResponse } from "@/lib/types";
 import { getPosts, getPostBySlug } from "@/lib/contentful";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 async function validExample(): Promise<void> {
   const allPosts: BlogPost[] = await getPosts();
@@ -21,19 +18,6 @@ async function validExample(): Promise<void> {
   }
 }
 
-function ComponentExample(): JSX.Element {
-  return (
-    <>
-      {/* Button with valid props */}
-      <Button variant="default" size="lg">
-        Click me
-      </Button>
-
-      {/* Card with valid props */}
-      <Card className="p-6">Content</Card>
-    </>
-  );
-}
 
 interface TypedContentfulResponse {
   items: { sys: { id: string } }[];
