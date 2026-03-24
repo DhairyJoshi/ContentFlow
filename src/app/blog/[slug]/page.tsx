@@ -83,27 +83,24 @@ async function BlogDetailContent({
   }
 
   return (
-    <article className="max-w-2xl mx-auto space-y-8">
+    <article className="container max-w-3xl mx-auto py-6 lg:py-10">
       {/* Header */}
-      <div className="space-y-4">
-        <Link href="/blog">
-          <Button variant="outline">← Back to Blog</Button>
+      <div className="flex flex-col items-start gap-4 border-b pb-8 mb-8">
+        <Link href="/blog" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-2">
+          ← Back to Blog
         </Link>
-
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {post.title}
-        </h1>
-
-        <div className="flex flex-wrap gap-2 items-center text-sm text-gray-600 dark:text-gray-400">
-          <Badge variant="secondary">{formatDate(post.publishedDate)}</Badge>
-          <span>•</span>
-          <span>By Blog</span>
+        <div className="space-y-4">
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl text-foreground">
+            {post.title}
+          </h1>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <time dateTime={post.publishedDate}>{formatDate(post.publishedDate)}</time>
+          </div>
         </div>
       </div>
 
-      {/* Cover Image */}
       {post.coverImage && (
-        <div className="relative w-full h-96 rounded-lg overflow-hidden">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg border bg-muted mb-8">
           <Image
             src={post.coverImage.url}
             alt={post.coverImage.title || post.title}
@@ -114,29 +111,8 @@ async function BlogDetailContent({
         </div>
       )}
 
-      {/* Excerpt */}
-      <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-        {post.excerpt}
-      </p>
-
-      {/* Content */}
-      <div className="prose dark:prose-invert max-w-none">
-        {post.content ? (
-          <RichTextRenderer content={post.content} />
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-gray-600 dark:text-gray-400">
-              Full content coming soon.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-gray-200 dark:border-gray-800 pt-8">
-        <Link href="/blog">
-          <Button variant="outline">← Back to Blog</Button>
-        </Link>
+      <div className="prose prose-neutral dark:prose-invert max-w-none">
+        <RichTextRenderer content={post.content} />
       </div>
     </article>
   );
@@ -148,7 +124,6 @@ export default async function BlogDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-
   return (
     <Suspense fallback={<BlogDetailLoading />}>
       <BlogDetailContent slug={slug} />

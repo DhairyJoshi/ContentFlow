@@ -19,38 +19,38 @@ async function LatestPostsList() {
 
     if (posts.length === 0) {
       return (
-        <div className="text-center py-8">
-          <p className="text-gray-600 dark:text-gray-400">No blog posts yet.</p>
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No blog posts yet.</p>
         </div>
       );
     }
 
     return (
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
-          <Card key={post.id} className="flex flex-col">
+          <Card key={post.id} className="flex flex-col overflow-hidden transition-all hover:shadow-md">
             {post.coverImage && (
-              <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+              <div className="relative aspect-video w-full overflow-hidden">
                 <Image
                   src={post.coverImage.url}
                   alt={post.coverImage.title || post.title}
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform hover:scale-105"
                 />
               </div>
             )}
-            <CardHeader>
-              <CardTitle className="line-clamp-2">{post.title}</CardTitle>
-              <CardDescription>{formatDate(post.publishedDate)}</CardDescription>
+            <CardHeader className="p-4">
+              <CardTitle className="line-clamp-2 text-lg leading-tight">{post.title}</CardTitle>
+              <CardDescription className="text-xs">{formatDate(post.publishedDate)}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1">
-              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+            <CardContent className="flex-1 p-4 pt-0">
+              <p className="text-sm text-muted-foreground line-clamp-3">
                 {post.excerpt}
               </p>
             </CardContent>
-            <div className="px-6 pb-6">
+            <div className="p-4 pt-0">
               <Link href={`/blog/${post.slug}`} className="w-full">
-                <Button className="w-full" size="sm">
+                <Button className="w-full" variant="secondary" size="sm">
                   Read More
                 </Button>
               </Link>
@@ -61,9 +61,9 @@ async function LatestPostsList() {
     );
   } catch (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-600 dark:text-gray-400">
-          No blog posts available at the moment.
+      <div className="text-center py-12">
+        <p className="text-destructive">
+          Unable to load posts. Please try again later.
         </p>
       </div>
     );
@@ -72,15 +72,18 @@ async function LatestPostsList() {
 
 function LatestPostsLoading() {
   return (
-    <div className="grid gap-6 md:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {[...Array(3)].map((_, i) => (
-        <Card key={i}>
-          <Skeleton className="w-full h-48" />
-          <div className="p-6 space-y-4">
-            <Skeleton className="h-6 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-10 w-full" />
+        <Card key={i} className="overflow-hidden">
+          <Skeleton className="aspect-video w-full" />
+          <div className="p-4 space-y-3">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-3 w-1/3" />
+            <div className="space-y-2 pt-2">
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-5/6" />
+            </div>
+            <Skeleton className="h-9 w-full mt-4" />
           </div>
         </Card>
       ))}
@@ -92,18 +95,23 @@ export default function Home() {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
-      <section className="text-center space-y-6 py-12">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Welcome to Our Blog
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Discover insightful articles about web development, technology, and modern software practices.
-        </p>
-        <Link href="/blog">
-          <Button size="lg">
-            Explore All Articles
-          </Button>
-        </Link>
+      <section className="text-center space-y-6 py-12 md:py-24">
+        <div className="space-y-2">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter">
+            Welcome to Our Blog
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-[600px] mx-auto">
+            Discover insightful articles about web development, technology, and modern software practices.
+          </p>
+        </div>
+        <div className="flex justify-center gap-4">
+          <Link href="/blog">
+            <Button size="lg">Browse Articles</Button>
+          </Link>
+          <Link href="https://github.com" target="_blank">
+            <Button variant="outline" size="lg">GitHub</Button>
+          </Link>
+        </div>
       </section>
 
       {/* Latest Posts Section */}
