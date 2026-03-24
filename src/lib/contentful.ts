@@ -29,7 +29,6 @@ async function fetchContentful<T>(query: string): Promise<T> {
   return response.json();
 }
 
-// Map Contentful response to clean domain type
 function mapContentfulToBlogPost(
   item: ContentfulBlogResponseItem
 ): BlogPost {
@@ -51,11 +50,15 @@ function mapContentfulToBlogPost(
 }
 
 export async function getPosts(limit: number = 100): Promise<BlogPost[]> {
-  const query = new URLSearchParams({
+  const params: Record<string, string> = {
     content_type: "blogPost",
-    limit: limit.toString(),
-    order: "-fields.publishedDate",
-  }).toString();
+  };
+  
+  if (limit && limit !== 100) {
+    params.limit = limit.toString();
+  }
+  
+  const query = new URLSearchParams(params).toString();
 
   const data = await fetchContentful<
     ContentfulResponse<ContentfulBlogResponseItem>
@@ -89,4 +92,26 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 export async function getLatestPosts(count: number = 3): Promise<BlogPost[]> {
   const posts = await getPosts(count);
   return posts.slice(0, count);
+}
+
+export async function getEntryById(entryId: string): Promise<BlogPost | null> {
+  const url = `https://cdn.contentful.com/spaces/${CONTENTFUL_SPACE_ID}/environments/master/entries/${entryId}?access_token=${CONTENTFUL_ACCESS_TOKEN}`;
+
+  const response = await fetch(url, {
+    next: {
+      revalidate: 3600,
+    },
+  });
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return null;
+    }
+    throw new Error(
+      `Contentful API error: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const data = await response.json() as ContentfulBlogResponseItem;
+  return mapContentfulToBlogPost(data);
 }

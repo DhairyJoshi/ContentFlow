@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPosts, getPostBySlug } from "@/lib/contentful";
 import { formatDate } from "@/lib/utils";
+import { richTextToHtml } from "@/lib/richtext";
 
 export async function generateStaticParams() {
   const posts = await getPosts();
@@ -41,11 +42,13 @@ export async function generateMetadata({
   };
 }
 
-function RichTextRenderer({ content }: { content: string }) {
+function RichTextRenderer({ content }: { content: string | any }) {
+  const html = richTextToHtml(content);
+  
   return (
     <div
       className="prose dark:prose-invert prose-sm sm:prose-base max-w-none"
-      dangerouslySetInnerHTML={{ __html: content }}
+      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }
