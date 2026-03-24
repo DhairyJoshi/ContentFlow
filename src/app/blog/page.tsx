@@ -32,7 +32,7 @@ async function BlogPostsList() {
             <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
               <div className="flex gap-4 p-6 h-full">
                 {post.coverImage && (
-                  <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
+                  <div className="relative w-32 h-32 shrink-0 rounded-lg overflow-hidden">
                     <Image
                       src={post.coverImage.url}
                       alt={post.coverImage.title || post.title}
@@ -64,8 +64,8 @@ async function BlogPostsList() {
   } catch (error) {
     return (
       <div className="text-center py-16">
-        <p className="text-red-600 dark:text-red-400">
-          Failed to load blog posts. Please try again later.
+        <p className="text-gray-600 dark:text-gray-400 text-lg">
+          No blog posts available at the moment.
         </p>
       </div>
     );
@@ -78,7 +78,7 @@ function BlogPostsLoading() {
       {[...Array(5)].map((_, i) => (
         <Card key={i} className="p-6">
           <div className="flex gap-4">
-            <Skeleton className="w-32 h-32 rounded-lg flex-shrink-0" />
+            <Skeleton className="w-32 h-32 rounded-lg shrink-0" />
             <div className="flex-1 space-y-3">
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/3" />

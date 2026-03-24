@@ -62,8 +62,8 @@ async function LatestPostsList() {
   } catch (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-red-600 dark:text-red-400">
-          Failed to load blog posts. Please try again later.
+        <p className="text-gray-600 dark:text-gray-400">
+          No blog posts available at the moment.
         </p>
       </div>
     );

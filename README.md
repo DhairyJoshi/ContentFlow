@@ -41,34 +41,39 @@ npm install
 
 ### 3. Set Up Contentful
 
+**For detailed step-by-step instructions, see [CONTENTFUL_SETUP.md](CONTENTFUL_SETUP.md)**
+
+Quick summary:
 1. Create a free account at [contentful.com](https://contentful.com)
 2. Create a new space
-3. Create a content model called `BlogPost` with these fields:
+3. Create a BlogPost content type with these fields:
    - `title` (Short Text, required)
    - `slug` (Short Text, required, unique)
    - `excerpt` (Long Text)
    - `content` (Rich Text)
-   - `coverImage` (Media)
+   - `coverImage` (Media, optional)
    - `publishedDate` (Date & Time)
-
-4. Create at least 3 blog posts in your space
+4. Create at least 3 sample blog posts
+5. Get your API credentials (Space ID & Access Token)
 
 ### 4. Configure Environment Variables
+
+**For detailed instructions, see [CONTENTFUL_SETUP.md](CONTENTFUL_SETUP.md#configure-environment-variables)**
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Then update `.env.local` with your Contentful credentials:
+Update `.env.local` with your Contentful credentials:
 
 ```env
 NEXT_PUBLIC_CONTENTFUL_SPACE_ID=your_space_id
 CONTENTFUL_ACCESS_TOKEN=your_access_token
 ```
 
-You can find these in Contentful:
-- Space ID: Settings > Space settings > Space ID
-- Access Token: Settings > API keys > Content delivery / preview tokens
+Find these in Contentful:
+- **Space ID**: Settings > API keys (displayed at top)
+- **Access Token**: Settings > API keys > Content delivery tokens > Generate personal token
 
 ### 5. Run Development Server
 
@@ -278,12 +283,18 @@ Make sure `.env.local` exists and contains both required variables:
 
 MIT
 
-## Support
+## Support & Documentation
 
-For issues or questions, please check:
-1. [Next.js Documentation](https://nextjs.org/docs)
-2. [Contentful Documentation](https://www.contentful.com/developers/docs/)
-3. [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+For detailed setup guides:
+- **[CONTENTFUL_SETUP.md](CONTENTFUL_SETUP.md)** - Complete Contentful implementation guide with screenshots and troubleshooting
+- **[AGENTS.md](AGENTS.md)** - Architecture patterns, implementation details, and best practices
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Step-by-step Vercel deployment guide
+
+For questions or issues, check:
+1. [CONTENTFUL_SETUP.md Troubleshooting Section](CONTENTFUL_SETUP.md#troubleshooting)
+2. [Next.js Documentation](https://nextjs.org/docs)
+3. [Contentful Documentation](https://www.contentful.com/developers/docs/)
+4. [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
 ## Deploy on Vercel
 
