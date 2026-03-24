@@ -8,6 +8,10 @@ A modern, production-ready blog application built with **Next.js (App Router)**,
 - **Language**: TypeScript (strict mode, no `any`)
 - **CMS**: Contentful Delivery API
 - **Styling**: Tailwind CSS v4
+
+## Learning Progress
+
+- Learned how to create a Pull Request
 - **UI Components**: shadcn/ui
 - **Image Optimization**: next/image
 - **Deployment**: Vercel
