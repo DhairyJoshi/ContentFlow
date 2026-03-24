@@ -33,7 +33,6 @@ async function fetchContentful<T>(query: string, preview: boolean = false): Prom
   }
 
   const url = `${urlBase}/entries?${query}&access_token=${accessToken}`;
-  console.log(`Fetching from Contentful (${isDraftMode ? 'Preview' : 'Delivery'} API):`, url);
 
   const response = await fetch(url, {
     cache: isDraftMode ? 'no-store' : 'force-cache',
@@ -43,13 +42,15 @@ async function fetchContentful<T>(query: string, preview: boolean = false): Prom
     },
   });
 
+
   if (!response.ok) {
     throw new Error(
       `Contentful API error: ${response.status} ${response.statusText}`
     );
   }
 
-  return response.json();
+  const data = await response.json();
+  return data;
 }
 
 function mapContentfulToBlogPost(
@@ -88,7 +89,7 @@ function mapContentfulToBlogPost(
   };
 }
 
-export async function getPosts(limit: number = 100): Promise<BlogPost[]> {
+export async function getPosts({ limit = 100, query }: { limit?: number; query?: string } = {}): Promise<BlogPost[]> {
   const params: Record<string, string> = {
     content_type: "blogPost",
   };
@@ -96,14 +97,19 @@ export async function getPosts(limit: number = 100): Promise<BlogPost[]> {
   if (limit && limit !== 100) {
     params.limit = limit.toString();
   }
+
+  if (query) {
+    params.query = query;
+  }
   
-  const query = new URLSearchParams(params).toString();
+  const queryString = new URLSearchParams(params).toString();
 
   const data = await fetchContentful<
     ContentfulResponse<ContentfulBlogResponseItem>
-  >(query);
+  >(queryString);
 
-  return data.items
+  
+  const posts = data.items
     .map((item) => mapContentfulToBlogPost(item, data.includes))
     .sort((a, b) => {
       return (
@@ -111,6 +117,8 @@ export async function getPosts(limit: number = 100): Promise<BlogPost[]> {
         new Date(a.publishedDate).getTime()
       );
     });
+  
+  return posts;
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
@@ -131,8 +139,8 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
 }
 
 export async function getLatestPosts(count: number = 3): Promise<BlogPost[]> {
-  const posts = await getPosts(count);
-  return posts.slice(0, count);
+  const posts = await getPosts({ limit: count });
+  return posts;
 }
 
 export async function getEntryById(entryId: string): Promise<BlogPost | null> {

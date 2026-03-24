@@ -1,9 +1,11 @@
+import { Document } from "@contentful/rich-text-types";
+
 export interface BlogPost {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
-  content: string;
+  content: Document | string;
   coverImage: {
     url: string;
     title?: string;
@@ -19,7 +21,7 @@ export interface ContentfulBlogResponseItem {
     title: string;
     slug: string;
     excerpt?: string;
-    content?: string;
+    content?: Document | string;
     coverImage?: {
       sys: {
         id: string;

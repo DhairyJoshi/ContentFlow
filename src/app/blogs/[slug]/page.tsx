@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPosts, getPostBySlug } from "@/lib/contentful";
 import { formatDate } from "@/lib/utils";
-import { richTextToHtml } from "@/lib/richtext";
+import { RichText } from "@/components/rich-text";
 import PreviewBanner from "@/components/preview-banner";
 
 export async function generateStaticParams() {
@@ -41,17 +41,6 @@ export async function generateMetadata({
       images: post.coverImage ? [{ url: post.coverImage.url }] : [],
     },
   };
-}
-
-function RichTextRenderer({ content }: { content: string | any }) {
-  const html = richTextToHtml(content);
-  
-  return (
-    <div
-      className="prose dark:prose-invert prose-sm sm:prose-base max-w-none"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
 }
 
 function BlogDetailLoading() {
@@ -95,7 +84,9 @@ async function BlogDetailContent({
             {post.title}
           </h1>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <time dateTime={post.publishedDate}>{formatDate(post.publishedDate)}</time>
+            <time dateTime={post.publishedDate} suppressHydrationWarning>
+              {formatDate(post.publishedDate)}
+            </time>
           </div>
         </div>
       </div>
@@ -106,6 +97,7 @@ async function BlogDetailContent({
             src={post.coverImage.url}
             alt={post.coverImage.title || post.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 768px"
             className="object-cover"
             priority
           />
@@ -113,7 +105,7 @@ async function BlogDetailContent({
       )}
 
       <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <RichTextRenderer content={post.content} />
+        <RichText content={post.content} />
       </div>
     </article>
   );
