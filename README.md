@@ -1,303 +1,289 @@
-# Blog Mini Production App
+# ContentFlow - Modern Blog Application
 
-A modern, production-ready blog application built with **Next.js (App Router)**, **TypeScript**, **Contentful**, **Tailwind CSS**, and **shadcn/ui**.
+A production-ready blog platform built with Next.js 16.2.1, TypeScript, Contentful CMS, Tailwind CSS, and React 19. Includes rich text rendering, full-text search, responsive design, and optimized performance.
 
-## Tech Stack
+## Technology Stack
 
-- **Framework**: Next.js 16.2.1 (App Router)
-- **Language**: TypeScript (strict mode, no `any`)
-- **CMS**: Contentful Delivery API
+- **Framework**: Next.js 16.2.1 (App Router, React Server Components)
+- **Language**: TypeScript (strict mode)
+- **CMS**: Contentful (Delivery & Preview APIs)
 - **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
-- **Image Optimization**: next/image
+- **UI Library**: shadcn/ui components
+- **Rich Text**: @contentful/rich-text-react-renderer with custom renderers
+- **Search**: Debounced client-side search with URL persistence
+- **Performance**: ISR, Image Optimization, Streaming with Suspense
 - **Deployment**: Vercel
-- **Version Control**: GitHub
 
 ## Features
 
-- Server-side rendering with ISR (Incremental Static Regeneration)
-- Type-safe Contentful data fetching
-- Fully responsive design
-- SEO metadata with OpenGraph
-- Loading states with Skeleton components
-- Error handling and 404 pages
+- Contentful CMS integration with type-safe, fully typed data fetching
+- Rich text content rendering with 15+ node types (headings, lists, quotes, code, links, embedded assets)
+- Full-text search with debounced filtering and URL state persistence
+- Draft mode support via Contentful Preview API
+- Incremental Static Regeneration (1-hour revalidation)
+- Server Components for data fetching with Client Components for interactivity
+- Streaming UI with React Suspense and skeleton loading states
+- Image optimization with responsive sizing from Contentful CDN
+- SEO metadata with OpenGraph support
+- Error handling and custom 404 pages
 - Dark mode support
-- Production-ready performance
+- Responsive mobile-first design
+- Debug logging for development and troubleshooting
+- Production-ready error boundaries
 
 ## Getting Started
 
-### 1. Clone the Repository
+### Prerequisites
 
+- Node.js 23.6+ and npm 11+
+- Contentful account (free at [contentful.com](https://contentful.com))
+
+### Installation
+
+1. Clone repository:
 ```bash
 git clone <repository-url>
-cd content-flow
-```
-
-### 2. Install Dependencies
-
-```bash
+cd contentflow
 npm install
 ```
 
-### 3. Set Up Contentful
+2. Set up Contentful space with BlogPost content type:
+   - Create new space in Contentful dashboard
+   - Create BlogPost content type with fields:
+     - `title` (Short Text, required)
+     - `slug` (Short Text, required, unique)
+     - `excerpt` (Long Text)
+     - `content` (Rich Text)
+     - `coverImage` (Media)
+     - `publishedDate` (Date & Time)
+   - Create 3+ sample blog posts and publish
 
-**For detailed step-by-step instructions, see [CONTENTFUL_SETUP.md](CONTENTFUL_SETUP.md)**
-
-Quick summary:
-1. Create a free account at [contentful.com](https://contentful.com)
-2. Create a new space
-3. Create a BlogPost content type with these fields:
-   - `title` (Short Text, required)
-   - `slug` (Short Text, required, unique)
-   - `excerpt` (Long Text)
-   - `content` (Rich Text)
-   - `coverImage` (Media, optional)
-   - `publishedDate` (Date & Time)
-4. Create at least 3 sample blog posts
-5. Get your API credentials (Space ID & Access Token)
-
-### 4. Configure Environment Variables
-
-**For detailed instructions, see [CONTENTFUL_SETUP.md](CONTENTFUL_SETUP.md#configure-environment-variables)**
-
+3. Configure environment variables:
 ```bash
 cp .env.local.example .env.local
 ```
 
-Update `.env.local` with your Contentful credentials:
-
+Add Contentful credentials to `.env.local`:
 ```env
 NEXT_PUBLIC_CONTENTFUL_SPACE_ID=your_space_id
-CONTENTFUL_ACCESS_TOKEN=your_access_token
+CONTENTFUL_ACCESS_TOKEN=your_delivery_token
+CONTENTFUL_PREVIEW_ACCESS_TOKEN=your_preview_token
 ```
 
-Find these in Contentful:
-- **Space ID**: Settings > API keys (displayed at top)
-- **Access Token**: Settings > API keys > Content delivery tokens > Generate personal token
-
-### 5. Run Development Server
-
+4. Run development server:
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Visit [http://localhost:3000](http://localhost:3000)
 
 ## Project Structure
 
 ```
 src/
 ├── app/
-│   ├── layout.tsx          # Root layout with navigation
-│   ├── page.tsx            # Home page with latest posts
-│   ├── globals.css         # Global styles
-│   └── blog/
-│       ├── page.tsx        # Blog list page
+│   ├── layout.tsx              # Root layout with navigation
+│   ├── page.tsx                # Home page with latest posts
+│   ├── globals.css             # Global styles with Tailwind
+│   ├── api/
+│   │   ├── draft/              # Draft mode endpoint
+│   │   └── disable-draft/      # Disable draft mode endpoint
+│   └── blogs/
+│       ├── page.tsx            # Blog list with search filtering
 │       └── [slug]/
-│           ├── page.tsx    # Blog detail page
-│           └── not-found.tsx
+│           ├── page.tsx        # Blog detail with rich text
+│           └── not-found.tsx   # 404 page
 ├── components/
-│   ├── ui/
-│   │   ├── button.tsx      # shadcn/ui Button
-│   │   ├── card.tsx        # shadcn/ui Card
-│   │   ├── badge.tsx       # shadcn/ui Badge
-│   │   └── skeleton.tsx    # Skeleton loading component
-│   └── navigation.tsx      # Navigation component
+│   ├── navigation.tsx          # Site navigation
+│   ├── rich-text.tsx           # Rich text renderer (client)
+│   ├── blog-filter.tsx         # Search component (client)
+│   ├── preview-banner.tsx      # Draft mode indicator
+│   └── ui/
+│       ├── button.tsx
+│       ├── card.tsx
+│       ├── badge.tsx
+│       ├── skeleton.tsx
+│       └── input.tsx
 └── lib/
-    ├── types.ts            # TypeScript types
-    ├── contentful.ts       # Contentful API client
-    └── utils.ts            # Utility functions
+    ├── types.ts                # TypeScript interfaces
+    ├── contentful.ts           # Contentful API client
+    ├── richtext.ts             # Rich text utilities
+    └── utils.ts                # Helper functions
 ```
 
 ## Pages
 
-### Home (/)
-- Hero section with CTA button
-- Latest 3 blog posts with cover images
-- Responsive grid layout
+| Route | Description |
+|-------|-------------|
+| `/` | Home page with hero section and latest 3 posts |
+| `/blogs` | Blog list with full-text search filtering |
+| `/blogs/[slug]` | Individual blog post with rich text content and metadata |
+| `/blogs/[slug]/not-found` | 404 page for non-existent posts |
 
-### Blog List (/blog)
-- All blog posts in a list format
-- Title, excerpt, and published date
-- Cover image preview
-- Responsive layout with loading states
+## Key Components
 
-### Blog Detail (/blog/[slug])
-- Full blog post with title, date, and cover image
-- Rich text content rendering
-- SEO metadata
-- Back to blog navigation
-- 404 page for non-existent slugs
+### RichText Component
+Renders Contentful rich text with support for:
+- Headings (H1-H6) with semantic styling
+- Paragraphs with proper typography
+- Ordered and unordered lists
+- Blockquotes and code blocks
+- Hyperlinks and internal links
+- Embedded images and assets
+- Text formatting (bold, italic, underline, code)
+- Keyboard shortcuts for code
+
+### BlogFilter Component
+Full-width search with:
+- Search icon with focus state transitions
+- 300ms debounced text input
+- URL-persisted search state
+- Clear button (hidden when not searching)
+- Loading indicator during search
+- Minimalist modern design
+
+### UI Components
+- Button: Size and variant options
+- Card: Composite card structure for blog posts
+- Badge: Tag styling for content categories
+- Input: Accessible text input with focus states
+- Skeleton: Placeholder loading states
 
 ## Contentful Model
 
 ### BlogPost Content Type
 
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| title | Short Text | Yes | Article title |
-| slug | Short Text | Yes | URL-friendly identifier (unique) |
-| excerpt | Long Text | No | Short description |
-| content | Rich Text | No | Full article content |
-| coverImage | Media | No | Featured image |
-| publishedDate | Date & Time | No | Publication date |
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| title | Short Text | Yes | Article headline |
+| slug | Short Text | Yes | URL-friendly identifier (must be unique) |
+| excerpt | Long Text | No | Short description for preview cards |
+| content | Rich Text | No | Full article content with formatting |
+| coverImage | Media | No | Featured image for blog card and detail |
+| publishedDate | Date & Time | No | Publication timestamp for sorting |
 
-## Development
+### API Queries
 
-### Adding New Components
-
-New shadcn/ui components can be added to `src/components/ui/`. They use:
-- CVA (Class Variance Authority) for variants
-- Tailwind CSS for styling
-- Type-safe props
-
-### Fetching Data
-
-All Contentful data is fetched through typed functions in `lib/contentful.ts`:
+All data fetching is type-safe and centralized in `lib/contentful.ts`:
 
 ```typescript
 import { getPosts, getPostBySlug, getLatestPosts } from "@/lib/contentful";
 
-// Get all posts
-const posts = await getPosts();
+// Get all posts with optional search
+const posts = await getPosts({ query?: string });
 
-// Get a single post by slug
-const post = await getPostBySlug("my-post-slug");
+// Get single post by slug
+const post = await getPostBySlug(slug);
 
-// Get the latest N posts
-const latest = await getLatestPosts(5);
+// Get latest N posts
+const latest = await getLatestPosts(3);
 ```
 
-### Type Safety
+Data is automatically mapped from Contentful raw responses to clean domain types.
 
-All responses are mapped to clean domain types defined in `lib/types.ts`. No direct Contentful SDK usage in components.
+## Development
 
-## Production Deployment
+### Build and Development Commands
 
-### Deploy to Vercel
+```bash
+npm run dev        # Start development server with hot reload
+npm run build      # Build for production
+npm run start      # Run production build locally
+npm run lint       # Check code quality
+npx tsc --noEmit   # Type check without emitting
+```
+
+### Code Organization
+
+- **Server Components**: Data fetching in app/ pages
+- **Client Components**: Marked with 'use client' for interactivity
+- **Utilities**: Shared functions in lib/ directory
+- **UI Components**: Reusable shadcn/ui components in components/ui
+- **Types**: Centralized TypeScript interfaces in lib/types.ts
+
+### Adding Features
+
+- New pages: Create `.tsx` file in `src/app/`
+- New components: Add to `src/components/`
+- New API functions: Extend `src/lib/contentful.ts`
+- New types: Update `src/lib/types.ts`
+
+## Deployment
+
+### Vercel
 
 1. Push code to GitHub
-2. Connect repository to Vercel: [vercel.com/new](https://vercel.com/new)
+2. Connect repository in Vercel dashboard: [vercel.com/new](https://vercel.com/new)
 3. Set environment variables in Vercel project settings:
    - `NEXT_PUBLIC_CONTENTFUL_SPACE_ID`
    - `CONTENTFUL_ACCESS_TOKEN`
+   - `CONTENTFUL_PREVIEW_ACCESS_TOKEN`
 4. Deploy
 
-### ISR Configuration
+Incremental Static Regeneration is configured for 3600-second (1 hour) revalidation intervals.
 
-The app uses Incremental Static Regeneration (ISR) with a 3600-second (1 hour) revalidation interval. This can be adjusted in `lib/contentful.ts`:
+## Performance
 
-```typescript
-next: {
-  revalidate: 3600, // Update in seconds
-}
-```
-
-## Performance Optimizations
-
-- Image optimization with `next/image`
-- ISR for fast initial page loads
-- Streaming UI with React Suspense
+- Next.js 16.2.1 with React Compiler (Babel plugin tree shaking)
+- Image optimization with responsive sizing
+- Incremental Static Regeneration for cache invalidation
+- React 19 Suspense for streaming UI
 - Minimal client-side JavaScript
-- Tailwind CSS purging
+- Tailwind CSS purging of unused styles
 
-## GitHub Repository Structure
+## Environment Variables
 
-This repository follows best practices:
-
-- `main` branch: Production-ready code
-- Feature branches: New features/fixes with pull requests
-- Clear commit messages
-- Comprehensive README (this file)
-
-## Optional Enhancements
-
-### Draft/Preview Mode
-
-To enable Contentful preview mode:
-
-1. Add preview token to `.env.local`:
-   ```env
-   CONTENTFUL_PREVIEW_TOKEN=your_preview_token
-   ```
-
-2. Update `lib/contentful.ts` to support draft mode
-
-### Rich Text Rendering
-
-Currently using simple HTML rendering. For advanced rich text rendering:
-
-```bash
-npm install @contentful/rich-text-react-renderer
-```
-
-Then update the `RichTextRenderer` component in `src/app/blog/[slug]/page.tsx`.
-
-### Blog Filtering
-
-Add filters for:
-- Search by title
-- Filter by publish date
-- Category/tag filtering
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_CONTENTFUL_SPACE_ID` | Yes | Contentful space identifier (public) |
+| `CONTENTFUL_ACCESS_TOKEN` | Yes | Delivery API token (server-side only) |
+| `CONTENTFUL_PREVIEW_ACCESS_TOKEN` | No | Preview API token for draft mode |
 
 ## Troubleshooting
 
-### "Missing Contentful environment variables"
-
-Make sure `.env.local` exists and contains both required variables:
-- `NEXT_PUBLIC_CONTENTFUL_SPACE_ID`
-- `CONTENTFUL_ACCESS_TOKEN`
-
-### No blog posts showing
-
-1. Verify blog posts exist in Contentful
-2. Check content type name is `blogPost` (exact match)
-3. Verify published date is set
-4. Check API access token has Delivery API permissions
+### No blog posts appearing
+- Check environment variables are set in `.env.local`
+- Verify Contentful space ID and access token are correct
+- Confirm BlogPost content type exists and matches exactly
+- Ensure blog posts have publishDate set and are published
+- Check API token has Delivery API access permissions
 
 ### Images not loading
+- Verify Contentful media URLs use HTTPS
+- Check cover images are assigned in Contentful editor
+- Ensure image field is configured in BlogPost content type
+- Test Contentful CDN is accessible
 
-1. Verify image URLs in Contentful start with `https://`
-2. Check image field is properly configured
-3. Use Contentful's image CDN URL format
+### Search not working
+- Open browser console to check for JavaScript errors
+- Verify search terms match post titles or excerpts
+- Check blog post data is loading in network tab
+- Clear browser cache and reload page
 
-## Requirements Checklist
+### Build errors on Windows
+- Current version uses webpack on Windows (Next.js 16.2.1 limitation)
+- Build may be slower than webpack baseline
+- Turbopack will be enabled when Next.js upgrade fixes Windows support
 
-- Home page with hero and latest 3 posts
-- Blog list page with all posts
-- Blog detail page with dynamic slug routing
-- 404 page for non-existent posts
-- Contentful integration with Delivery API
-- TypeScript (strict, no `any`)
-- Tailwind CSS layout
-- shadcn/ui components (Button, Card, Badge)
-- next/image for images
-- ISR for performance
-- Error handling
-- Env variables via .env.local
-- GitHub repository
-- Clean code structure
-- Production readiness
+### Build fails with "Next.js package not found"
+- This was a Turbopack issue on Windows - now fixed with webpack fallback
+- If still occurring, try clearing cache: `rm -rf .next node_modules/.cache`
+- Reinstall dependencies: `npm install`
+
+## Browser Support
+
+- Chrome/Edge (latest)
+- Firefox (latest)
+- Safari (latest)
+- Mobile browsers (iOS Safari, Chrome Mobile)
 
 ## License
 
 MIT
 
-## Support & Documentation
+## References
 
-For detailed setup guides:
-- **[CONTENTFUL_SETUP.md](CONTENTFUL_SETUP.md)** - Complete Contentful implementation guide with screenshots and troubleshooting
-- **[AGENTS.md](AGENTS.md)** - Architecture patterns, implementation details, and best practices
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Step-by-step Vercel deployment guide
-
-For questions or issues, check:
-1. [CONTENTFUL_SETUP.md Troubleshooting Section](CONTENTFUL_SETUP.md#troubleshooting)
-2. [Next.js Documentation](https://nextjs.org/docs)
-3. [Contentful Documentation](https://www.contentful.com/developers/docs/)
-4. [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Contentful API Docs](https://www.contentful.com/developers/docs/)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+- [React Documentation](https://react.dev)

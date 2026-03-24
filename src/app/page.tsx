@@ -109,7 +109,7 @@ export default function Home() {
           <Link href="/blogs">
             <Button size="lg">Browse Articles</Button>
           </Link>
-          <Link href="https://github.com" target="_blank">
+          <Link href="https://github.com/DhairyJoshi/ContentFlow" target="_blank">
             <Button variant="outline" size="lg">GitHub</Button>
           </Link>
         </div>
